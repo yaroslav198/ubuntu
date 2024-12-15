@@ -1,0 +1,139 @@
+#include <iostream>
+#include <cmath>
+#include <string>
+#include <cctype>
+
+using namespace std;
+
+// Функція для обчислення факторіала
+int factorial(int n) {
+    if (n <= 1) return 1;
+    return n * factorial(n - 1);
+}
+
+// Клас для парсингу і обчислення виразу
+class Calculator {
+public:
+    explicit Calculator(const string& expr) : expression(expr), pos(0) {}
+
+    double parseExpression() {
+        return parseAdditionSubtraction();
+    }
+
+private:
+    string expression;
+    size_t pos;
+
+    // Пропустити пробіли
+    void skipWhitespace() {
+        while (pos < expression.size() && isspace(expression[pos])) {
+            pos++;
+        }
+    }
+
+    // Отримати наступне число чи підвираз у дужках
+    double parseNumberOrParentheses() {
+        skipWhitespace();
+
+        if (expression[pos] == '(') {
+            pos++; // Пропускаємо '('
+            double result = parseAdditionSubtraction();
+            if (expression[pos] == ')') {
+                pos++; // Пропускаємо ')'
+            } else {
+                throw runtime_error("Очікується ')'");
+            }
+            return result;
+        }
+
+        // Якщо це число
+        size_t start = pos;
+        while (pos < expression.size() && (isdigit(expression[pos]) || expression[pos] == '.')) {
+            pos++;
+        }
+
+        if (start == pos) {
+            throw runtime_error("Очікується число");
+        }
+
+        return stod(expression.substr(start, pos - start));
+    }
+
+    // Обробка факторіалу
+    double parseFactorial() {
+        double value = parseNumberOrParentheses();
+        skipWhitespace();
+
+        while (pos < expression.size() && expression[pos] == '!') {
+            if (value < 0 || (floor(value) != value)) {
+                throw runtime_error("Факторіал визначений тільки для невід'ємних цілих чисел");
+            }
+            value = factorial(static_cast<int>(value));
+            pos++; // Пропускаємо '!'
+        }
+
+        return value;
+    }
+
+    // Обробка множення і ділення
+    double parseMultiplicationDivision() {
+        double value = parseFactorial();
+
+        while (true) {
+            skipWhitespace();
+
+            if (pos < expression.size() && expression[pos] == '*') {
+                pos++;
+                value *= parseFactorial();
+            } else if (pos < expression.size() && expression[pos] == '/') {
+                pos++;
+                double divisor = parseFactorial();
+                if (divisor == 0) {
+                    throw runtime_error("Ділення на нуль");
+                }
+                value /= divisor;
+            } else {
+                break;
+            }
+        }
+
+        return value;
+    }
+
+    // Обробка додавання і віднімання
+    double parseAdditionSubtraction() {
+        double value = parseMultiplicationDivision();
+
+        while (true) {
+            skipWhitespace();
+
+            if (pos < expression.size() && expression[pos] == '+') {
+                pos++;
+                value += parseMultiplicationDivision();
+            } else if (pos < expression.size() && expression[pos] == '-') {
+                pos++;
+                value -= parseMultiplicationDivision();
+            } else {
+                break;
+            }
+        }
+
+        return value;
+    }
+};
+
+int main() {
+    cout << "Введіть математичний вираз: ";
+    string input;
+    getline(cin, input);
+
+    try {
+        Calculator calc(input);
+        double result = calc.parseExpression();
+        cout << "Результат: " << result << endl;
+    } catch (const exception& e) {
+        cerr << "Помилка: " << e.what() << endl;
+    }
+
+    return 0;
+}

@@ -1,0 +1,78 @@
+#include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <string>
+using namespace std;
+
+struct Person {
+    int code;
+    string name;
+    int gender;
+    string phone, address, profession;
+};
+
+void task1() {
+    int a[10], min, max;
+    srand(time(0));
+    cout << "Масив:\n";
+    for (int i = 0; i < 10; i++) {
+        a[i] = rand() % 101 + 200;
+        cout << "[" << i << "]\t" << a[i] << endl;
+    }
+    min = max = a[0];
+    for (int i = 1; i < 10; i++) {
+        if (a[i] < min) min = a[i];
+        if (a[i] > max) max = a[i];
+    }
+    cout << "Мінімум: " << min << "\nМаксимум: " << max << endl;
+}
+
+void task2() {
+    int a[10];
+    srand(time(0));
+    cout << "Початковий:\n";
+    for (int i = 0; i < 10; i++) {
+        a[i] = rand() % 41 - 20;
+        cout << "[" << i << "]\t" << a[i] << endl;
+    }
+    cout << "Змінений:\n";
+    for (int i = 0; i < 10; i++) {
+        if (a[i] < 0) a[i] = 55;
+        else a[i] *= -1;
+        cout << "[" << i << "]\t" << a[i] << endl;
+    }
+}
+
+void task3() {
+    Person p[2];
+    for (int i = 0; i < 2; i++) {
+        cout << "Особа " << i + 1 << ":\n";
+        cout << "Код: "; cin >> p[i].code;
+        cin.ignore();
+        cout << "Прізвище та ініціали: "; getline(cin, p[i].name);
+        cout << "Стать (1-ж, 2-ч): "; cin >> p[i].gender;
+        cin.ignore();
+        cout << "Телефон: "; getline(cin, p[i].phone);
+        cout << "Адреса: "; getline(cin, p[i].address);
+        cout << "Професія: "; getline(cin, p[i].profession);
+    }
+    for (int i = 0; i < 2; i++) {
+        cout << "\nОсоба " << i + 1 << ": " << p[i].name << ", ";
+        cout << (p[i].gender == 1 ? "Жінка" : "Чоловік") << ", ";
+        cout << "Тел: " << p[i].phone << ", Адреса: " << p[i].address;
+        cout << ", Професія: " << p[i].profession << endl;
+    }
+}
+
+int main() {
+    int n;
+    do {
+        cout << "\nВведіть номер завдання (1, 2, 3) або 0 для виходу: ";
+        cin >> n;
+        if (n == 1) task1();
+        else if (n == 2) task2();
+        else if (n == 3) task3();
+        else if (n != 0) cout << "Невірне число.\n";
+    } while (n != 0);
+    return 0;
+}

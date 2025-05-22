@@ -1,0 +1,37 @@
+#include <iostream>
+#include <iomanip>
+#include <cmath> 
+
+using namespace std;
+
+int alpha = 10;
+
+int main() {
+    
+    int x;               
+    double realVar = 5.5; 
+
+    cout << "Введіть ціле значення x: ";
+    cin >> x;
+
+    realVar += (alpha - x > 0)
+        ? sqrt(alpha - x)
+        : (2 * pow(x, 2)) / (alpha + x);
+
+    cout << "Значення змінних до розрахунку:\n";
+    cout << "x=" << x << ", realVar=" << 5.5 << endl; 
+    cout << "Значення змінних після розрахунку:\n";
+    cout << "x=" << x << ", realVar=" << realVar << endl;
+
+    double z1 = 2 * x * alpha + pow(x, 3); // Formula 1
+    double z2 = 2 * sqrt(pow(x, 3)) + (2 * pow(x, 2)) / (alpha * x + 10); // Formula 2
+    double z3 = alpha * pow(x, 2) * (x + alpha) + pow((x - alpha * alpha), 2); // Formula 3
+
+    cout << "Results\n";
+    cout << setw(7) << "1" << setw(7) << "2" << setw(7) << "3" << endl;
+    cout << setw(7) << fixed << setprecision(2) << z1
+        << setw(7) << z2
+        << setw(7) << z3 << endl;
+
+    return 0;
+}

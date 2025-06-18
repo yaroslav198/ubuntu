@@ -1,0 +1,30 @@
+import requests
+
+# URL до публічного API Monobank (не потрібна авторизація)
+url = "https://api.monobank.ua/bank/currency"
+
+# Робимо GET-запит
+response = requests.get(url)
+
+# Перевіряємо, чи запит успішний
+if response.status_code == 200:
+    data = response.json()
+    
+    # Валютні коди:
+    # 980 — гривня (UAH)
+    # 840 — долар США (USD)
+    # 978 — євро (EUR)
+
+    for item in data:
+        if item["currencyCodeA"] == 840 and item["currencyCodeB"] == 980:
+            print("Курс USD/UAH:")
+            print("Купівля:", item.get("rateBuy", "н/д"))
+            print("Продаж:", item.get("rateSell", "н/д"))
+            print()
+        elif item["currencyCodeA"] == 978 and item["currencyCodeB"] == 980:
+            print("Курс EUR/UAH:")
+            print("Купівля:", item.get("rateBuy", "н/д"))
+            print("Продаж:", item.get("rateSell", "н/д"))
+            print()
+else:
+    print("Помилка при запиті до API:", response.status_code)
